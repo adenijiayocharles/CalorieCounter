@@ -13,8 +13,13 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// routers
+const accountRouter = require("./routes/account");
+
+app.use("/account", accountRouter);
+
 app.listen(PORT, async () => {
-    console.log("Server connnected");
+    console.log(`Server connnected on port ${PORT}`);
     try {
         await sequelize.authenticate();
         console.log("Connection has been established successfully.");
