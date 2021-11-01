@@ -7,5 +7,7 @@ const foodController = require("../controllers/FoodController");
 const verifyUser = require("../middleware/auth");
 
 router.post("/", [createValidation, verifyUser], foodController.create);
+router.get("/", verifyUser, foodController.all);
+router.get("/:food_id", verifyUser, foodController.one);
 
 module.exports = router;

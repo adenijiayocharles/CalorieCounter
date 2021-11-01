@@ -13,7 +13,6 @@ const User = db.define(
         name: Sequelize.STRING,
         date_eaten: Sequelize.DATE,
         calorie: Sequelize.INTEGER,
-        role: Sequelize.STRING,
         created_at: Sequelize.DATE,
     },
     {
