@@ -4,6 +4,7 @@
   "description": "food calorie counter application",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "npm test"
   },
   "author": "Adeniji Charles Ayodipupo",
