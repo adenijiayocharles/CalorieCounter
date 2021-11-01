@@ -16,6 +16,7 @@ const User = db.define(
         },
         password: Sequelize.STRING,
         role: Sequelize.STRING,
+        token: Sequelize.STRING,
         created_at: Sequelize.DATE,
     },
     {

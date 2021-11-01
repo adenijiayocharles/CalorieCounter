@@ -8,6 +8,7 @@ const {
 } = require("../utilities/response");
 const { generateToken } = require("../utilities/tokenizer");
 const { randomNumber } = require("../utilities/utils");
+const Email = require("../utilities/email");
 
 /** creates a new user acccount */
 const register = async (req, res, next) => {
@@ -32,6 +33,7 @@ const register = async (req, res, next) => {
             email: req.body.email,
             password: password,
             role: req.body.role,
+            token: randomNumber(10),
         });
         const userDetails = {
             id: user.id,
@@ -59,7 +61,7 @@ const login = async (req, res, next) => {
         });
 
         if (!user) {
-            handleErrorResponse({
+            return handleErrorResponse({
                 res,
                 message: "Unable to login. Invalid email or password",
                 status_code: status.NOT_FOUND,
@@ -71,6 +73,7 @@ const login = async (req, res, next) => {
             req.body.password,
             user.password
         );
+
         if (!validPassword) {
             handleErrorResponse({
                 res,
@@ -95,8 +98,50 @@ const login = async (req, res, next) => {
     }
 };
 
-const forgotPassword = async (req, res, next) => {};
+/** creates a new user acccount */
+const invite = async (req, res, next) => {
+    try {
+        //check if account already exists
+        const doesUserExist = await User.findOne({
+            where: { email: req.body.email },
+        });
 
-const resetPassword = async (req, res, next) => {};
+        if (doesUserExist) {
+            handleErrorResponse({
+                res,
+                message: "User with email already exists",
+                status_code: status.CONFLICT,
+            });
+        }
 
-module.exports = { register, login, forgotPassword, resetPassword };
+        // create user
+        const generatedPassword = randomNumber(10);
+        const token = randomNumber(10);
+        const password = await bcryptjs.hashSync(generatedPassword, 10);
+
+        await User.create({
+            name: req.body.name,
+            email: req.body.email,
+            password: password,
+            role: "user",
+            token: token,
+        });
+
+        const message = `Dear ${req.body.name} <br> You have been invited to create an account on Calorie Counter. Your pasword is <b>${generatedPassword}</b> and token is <b>${token}</b>`;
+        Email(
+            req.body.email,
+            "You have been invited to use the Calorie Counter App",
+            message
+        );
+
+        handleSuccessResponse({
+            res,
+            message: "Calorie counter invite email sent successfully",
+            status_code: status.CREATED,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { register, login, invite };

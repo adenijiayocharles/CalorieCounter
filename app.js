@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: false }));
 // routers
 const accountRouter = require("./routes/account");
 
-app.use("/account", accountRouter);
+app.use("/api/account", accountRouter);
 
 app.listen(PORT, async () => {
     console.log(`Server connnected on port ${PORT}`);
