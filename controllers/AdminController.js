@@ -124,18 +124,18 @@ const adminAll = async (req, res, next) => {
         if (records.length) {
             let mapped = await Promise.all(
                 records.map(async (record) => {
-                    const user = await User.findOne({
+                    const post = await User.findAll({
                         where: { id: record.user_id },
                     });
 
+
                     return {
-                        id: record.id,
-                        user_id: user.id,
-                        user_name: user.name,
-                        food: record.name,
-                        calorie: record.calorie,
-                        date_eaten: record.date_eaten,
-                        created_at: record.created_at,
+                        id: record.messages_id,
+                        message: record.message,
+                        post_details: {
+                            title: post[0].title,
+                            user: user[0].name,
+                        },
                     };
                 })
             );
@@ -144,7 +144,7 @@ const adminAll = async (req, res, next) => {
                 res,
                 message: "Foods found",
                 status_code: status.OK,
-                body: { data: mapped },
+                body: { data: records },
             });
         } else {
             return handleSuccessResponse({
@@ -159,132 +159,4 @@ const adminAll = async (req, res, next) => {
     }
 };
 
-const adminOne = async (req, res, next) => {
-    try {
-        const records = await Food.findAll({
-            where: {
-                id: req.params.food_id,
-            },
-        });
-
-        if (records.length) {
-            let mapped = await Promise.all(
-                records.map(async (record) => {
-                    const user = await User.findOne({
-                        where: { id: record.user_id },
-                    });
-
-                    return {
-                        id: record.id,
-                        user_id: user.id,
-                        user_name: user.name,
-                        food: record.name,
-                        calorie: record.calorie,
-                        date_eaten: record.date_eaten,
-                        created_at: record.created_at,
-                    };
-                })
-            );
-
-            return handleSuccessResponse({
-                res,
-                message: "Foods found",
-                status_code: status.OK,
-                body: { data: mapped },
-            });
-        } else {
-            return handleSuccessResponse({
-                res,
-                message: "Foods not found",
-                status_code: status.OK,
-                body: { data: [] },
-            });
-        }
-    } catch (error) {
-        next(error);
-    }
-};
-
-const deleteOne = async (req, res, next) => {
-    try {
-        const record = await Food.destroy({
-            where: {
-                id: req.params.food_id,
-            },
-        });
-
-        if (record) {
-            return handleSuccessResponse({
-                res,
-                message: "Food deleted successfully",
-                status_code: status.OK,
-            });
-        } else {
-            return handleSuccessResponse({
-                res,
-                message: "Food not found. Unable to delete food",
-                status_code: status.OK,
-            });
-        }
-    } catch (error) {
-        next(error);
-    }
-};
-
-const update = async (req, res, next) => {
-    try {
-        const data = req.body;
-        const record = await Food.update(data, {
-            where: {
-                id: req.params.food_id,
-            },
-        });
-
-        if (record) {
-            return handleSuccessResponse({
-                res,
-                message: "Food updated successfully",
-                status_code: status.OK,
-            });
-        } else {
-            return handleSuccessResponse({
-                res,
-                message: "Food not found. Unable to update food",
-                status_code: status.OK,
-            });
-        }
-    } catch (error) {
-        next(error);
-    }
-};
-
-const createAdminFood = async (req, res, next) => {
-    try {
-        await Food.create({
-            name: req.body.name,
-            user_id: req.body.user_id,
-            date_eaten: req.body.date_eaten,
-            calorie: req.body.calorie,
-        });
-
-        handleSuccessResponse({
-            res,
-            message: "Food added successfully",
-            status_code: status.CREATED,
-        });
-    } catch (error) {
-        next(error);
-    }
-};
-
-module.exports = {
-    create,
-    all,
-    one,
-    calorieOverflow,
-    adminAll,
-    adminOne,
-    deleteOne,
-    update,
-    createAdminFood,
-};
+module.exports = { create, all, one, calorieOverflow, adminAll };

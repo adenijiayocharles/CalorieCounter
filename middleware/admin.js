@@ -47,7 +47,7 @@ const verifyUser = async (req, res, next) => {
             return handleErrorResponse({
                 res,
                 message: "Access denied.",
-                status_code: status.ACC,
+                status_code: status.UNAUTHORIZED,
             });
         }
 

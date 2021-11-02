@@ -16,9 +16,11 @@ app.use(express.urlencoded({ extended: false }));
 // routers
 const accountRouter = require("./routes/account");
 const foodRouter = require("./routes/food");
+const adminRouter = require("./routes/admin");
 
 app.use("/api/account", accountRouter);
 app.use("/api/food", foodRouter);
+app.use("/api/admin/food", adminRouter);
 
 app.listen(PORT, async () => {
     console.log(`Server connnected on port ${PORT}`);
