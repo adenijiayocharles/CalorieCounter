@@ -1,5 +1,6 @@
 "use strict";
 const status = require("http-status");
+const { Op } = require("sequelize");
 const Food = require("../models/Food");
 const {
     handleErrorResponse,
@@ -82,4 +83,36 @@ const one = async (req, res, next) => {
     }
 };
 
-module.exports = { create, all, one };
+const calorieOverflow = async (req, res, next) => {
+    try {
+        const limit = req.query.limit || 2100;
+        const records = await Food.findAll({
+            where: {
+                user_id: req.user_details.data.id,
+                calorie: {
+                    [Op.gte]: limit,
+                },
+            },
+        });
+
+        if (records.length) {
+            return handleSuccessResponse({
+                res,
+                message: "Food over the calorie limit found",
+                status_code: status.OK,
+                body: { data: records },
+            });
+        } else {
+            return handleSuccessResponse({
+                res,
+                message: "No food over the calorie limit found",
+                status_code: status.OK,
+                body: { data: [] },
+            });
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { create, all, one, calorieOverflow };
