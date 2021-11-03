@@ -1,6 +1,7 @@
 "use strict";
 require("dotenv").config();
 const express = require("express");
+const cors = require('cors');
 const app = express();
 
 // database
@@ -10,6 +11,7 @@ const sequelize = require("./database");
 const PORT = process.env.PORT || 5000;
 
 // express configuration
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
