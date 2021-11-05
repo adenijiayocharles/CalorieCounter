@@ -7,6 +7,7 @@ const foodController = require("../controllers/FoodController");
 const verifyUser = require("../middleware/admin");
 
 router.get("/", verifyUser, foodController.adminAll);
+//router.get("/users/calories", foodController.caloriesPerUser);
 router.get("/:food_id", verifyUser, foodController.adminOne);
 router.delete("/:food_id", verifyUser, foodController.deleteOne);
 router.put("/:food_id", verifyUser, foodController.update);
