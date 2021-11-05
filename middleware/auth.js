@@ -43,14 +43,6 @@ const verifyUser = async (req, res, next) => {
             });
         }
 
-        if(user.role !== "admin") {
-            return handleErrorResponse({
-                res,
-                message: "Access denied.",
-                status_code: status.ACC,
-            });
-        }
-
         next();
     } catch (error) {
         next(error);
