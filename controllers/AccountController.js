@@ -41,6 +41,10 @@ const register = async (req, res, next) => {
             email: user.email,
             role: user.role,
         };
+
+        const message = `Dear ${req.body.name} <br> Welcome to Calorie Counter`;
+        Email(req.body.email, "Calorie Counter Welcome Message", message);
+
         const token = generateToken(userDetails);
         handleSuccessResponse({
             res,
@@ -127,7 +131,8 @@ const invite = async (req, res, next) => {
             token: token,
         });
 
-        const message = `Dear ${req.body.name} <br> You have been invited to create an account on Calorie Counter. Your pasword is <b>${generatedPassword}</b> and token is <b>${token}</b>`;
+        const message = `Dear ${req.body.name} <br> You have been invited to create an account on Calorie Counter. Your pasword is <b>${generatedPassword}</b>. Click on the link below to continue <br>  
+        http://localhost:3000/access?=${token}</b>`;
         Email(
             req.body.email,
             "You have been invited to use the Calorie Counter App",
