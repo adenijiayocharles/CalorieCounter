@@ -132,7 +132,7 @@ const invite = async (req, res, next) => {
         });
 
         const message = `Dear ${req.body.name} <br> You have been invited to create an account on Calorie Counter. Your pasword is <b>${generatedPassword}</b>. Click on the link below to continue <br>  
-        http://localhost:3000/access?=${token}</b>`;
+        <a href="http://localhost:3000/access?=${token}">http://localhost:3000/access?=${token}</a></b>`;
         Email(
             req.body.email,
             "You have been invited to use the Calorie Counter App",
